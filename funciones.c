@@ -34,8 +34,8 @@ int estaVacioArray(struct coordenadas *array)
 {	
 	/* Inicializamos vacio a true, y si encuentra un elemento
 	dentro del array nos devolverá -1 */
-	int vacio = null;
-	for(int i=0; i<TAM_ARRAY*TAM_ARRAY && vacio == null; i++){
+	int vacio = NULL;
+	for(int i=0; i<TAM_ARRAY*TAM_ARRAY && vacio == NULL; i++){
 		if(array[i]){
 			vacio = i;
 		}
@@ -52,9 +52,10 @@ bool estaVacio(struct tablero *t, enum estado_celula opcion)
 	switch(opcion){
 		case VIVA:
 		int res = estaVacioArray(t->arrayCelulasNacidas);
-		if(res!=NULL && res!=-1){
+		if( res != NULL ){
 			vacio = false;
 		}
+		t->index
 	}
 	
 	return vacio;
