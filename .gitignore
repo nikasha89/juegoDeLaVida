@@ -1,0 +1,4 @@
+#files to ignore
+juego_de_la_vida
+# Object file
+*.o
