@@ -8,7 +8,7 @@ int main(){
 
 	/* Inicializamos célula con el estado MUERTA por defecto */
 	struct celula{
-		enum estado_celula estado = MUERTA;
+		enum estado_celula estado;
 	} Celula;
 
 	struct coordenadas{
@@ -31,4 +31,3 @@ int main(){
 		int numeroCelulas = menuInicio();
 		printf("%d\n",numeroCelulas);	
 }
-#endif

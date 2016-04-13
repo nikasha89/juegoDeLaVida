@@ -5,7 +5,7 @@ int menuInicio()
 {
 	int num = 0;
 	printf("Escoge un número entre 3 y 2400: \n");
-	scanf("%d",num);
+	scanf("%d",&num);
 	return num;
 }
 
@@ -24,19 +24,19 @@ void inicializarTablero(struct tablero *t, int numCelulas)
 		int y= rand() %  50;
 		
 		t->arrayCelulasVivas[i];
-		t->tablero[x][y]-> estado = VIVA;
+		//t->tablero[x][y]-> estado = VIVA;
 	}
 }
 
 /* Comprueba si el array está vacío, devuelve 
 null si hubo algún problema y un index si está lleno */
-int estaVacioArray(struct coordenadas *array)
+int estaVacioArray(struct coordenadas array[TAM_ARRAY*TAM_ARRAY])
 {	
 	/* Inicializamos vacio a true, y si encuentra un elemento
 	dentro del array nos devolverá -1 */
 	int vacio = NULL;
-	for(int i=0; i<TAM_ARRAY*TAM_ARRAY && vacio == NULL; i++){
-		if(array[i]){
+	for(int i=0; i<TAM_ARRAY*TAM_ARRAY && !vacio; i++){
+		if(array[i].x && array[i].y){
 			vacio = i;
 		}
 	}
@@ -49,24 +49,27 @@ bool estaVacio(struct tablero *t, enum estado_celula opcion)
 	/* Inicializamos vacio a true, y si encuentra un elemento
 	dentro del array nos devolverá false */
 	bool vacio = true;
+	int res = NULL;
 	switch(opcion){
 		case VIVA:
-		int res = estaVacioArray(t->arrayCelulasNacidas);
-		if( res != NULL ){
-			vacio = false;
-		}
-		t->index
+			res = estaVacioArray(t->arrayCelulasNacen);
+			if( res ){
+				vacio = false;
+			}
+			//t->index
+		break;
+
 	}
 	
 	return vacio;
 }
 
-voi addCelula(struct tablero *t)
+void addCelulas(struct tablero *t)
 {
 	/* Añadimos las células nacidas 
 	a la última posición del array células vivas: */
 	for(int j=0;j<TAM_ARRAY*TAM_ARRAY;j++){
-		t->arrayCelulasVivas[j]
+		//t->arrayCelulasVivas[j]
 	}
 }
 
@@ -76,18 +79,20 @@ void iterarTablero(struct tablero *t)
 {	
 	/* Comprobamos que no tenemos Células que 
 	tengan que nacer o revivir de la anterior iteración: */
-	if(!estaVacio(t->arrayCelulasNacen)){
+	bool nacer = estaVacio(t, VIVA);
+	bool morir = estaVacio(t, MUERTA);
+	if(!nacer){
 		/* Añadimos al array de células vivas las correspondientes */
 		addCelulas(t);
 	}
-	if(!estaVacio(t->arrayCelulasMueren)){
+	if(!morir){
 		/* Eliminamos del array de células vivas las que mueren */	
-		removeCelulas(t);
+		//removeCelulas(t);
 	}
 	
 	/* Analizamos el nº de Células que deben nacer, 
 	permanecer igual o morir en la siguiente iteración: */
-	analizarTablero(t);
+	//analizarTablero(t);
 	/* Tras analizarTablero, tendremos en *t 2 arrays
 	con las coordenadas de las células que deben nacer
 	y morir en la siguiente iteración:
