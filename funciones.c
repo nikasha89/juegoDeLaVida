@@ -9,16 +9,28 @@ int menuInicio()
 	return num;
 }
 
+
+
+
+
+
+
+
+
+
+
+/* VERSION ANTERIOR
+
 //Inicializa el tablero con el número de células indicado por el usuario:
 void inicializarTablero(struct tablero *t, int numCelulas)
 {
 	//Bucle con valor de iteración igual al número de células: 
 	for(int i=0;i< numCelulas;i++)
 	{ 
-		/* Para obtener un número aleatorio:
+		 Para obtener un número aleatorio:
 		numero = rand () % (N-M+1) + M;   // Este está entre M y N 
 		En nuestro caso: Entre 0 y 49 Para obtener dos coordenadas del tablero
-		donde introducir las células vivas: */
+		donde introducir las células vivas: 
 		
 		int x= rand() %  50;
 		int y= rand() %  50;
@@ -28,12 +40,12 @@ void inicializarTablero(struct tablero *t, int numCelulas)
 	}
 }
 
-/* Comprueba si el array está vacío, devuelve 
-null si hubo algún problema y un index si está lleno */
+ Comprueba si el array está vacío, devuelve 
+null si hubo algún problema y un index si está lleno 
 int estaVacioArray(struct coordenadas array[TAM_ARRAY*TAM_ARRAY])
 {	
 	/* Inicializamos vacio a true, y si encuentra un elemento
-	dentro del array nos devolverá -1 */
+	dentro del array nos devolverá -1 
 	int vacio = NULL;
 	for(int i=0; i<TAM_ARRAY*TAM_ARRAY && !vacio; i++){
 		if(array[i].x && array[i].y){
@@ -43,11 +55,11 @@ int estaVacioArray(struct coordenadas array[TAM_ARRAY*TAM_ARRAY])
 	return vacio;
 }
 
-/* Comprueba si el array está vacío, devolviendo bool  */
+Comprueba si el array está vacío, devolviendo bool  
 bool estaVacio(struct tablero *t, enum estado_celula opcion)
 {	
 	/* Inicializamos vacio a true, y si encuentra un elemento
-	dentro del array nos devolverá false */
+	dentro del array nos devolverá false 
 	bool vacio = true;
 	int res = NULL;
 	switch(opcion){
@@ -67,26 +79,26 @@ bool estaVacio(struct tablero *t, enum estado_celula opcion)
 void addCelulas(struct tablero *t)
 {
 	/* Añadimos las células nacidas 
-	a la última posición del array células vivas: */
+	a la última posición del array células vivas: 
 	for(int j=0;j<TAM_ARRAY*TAM_ARRAY;j++){
 		//t->arrayCelulasVivas[j]
 	}
 }
 
 /* Realiza la comprobación de las células vivas/muertas para la siguiente iteración
-y elimina/añade las células nacidas de la anterior iteración */
+y elimina/añade las células nacidas de la anterior iteración 
 void iterarTablero(struct tablero *t)
 {	
 	/* Comprobamos que no tenemos Células que 
-	tengan que nacer o revivir de la anterior iteración: */
+	tengan que nacer o revivir de la anterior iteración: 
 	bool nacer = estaVacio(t, VIVA);
 	bool morir = estaVacio(t, MUERTA);
 	if(!nacer){
-		/* Añadimos al array de células vivas las correspondientes */
+		/* Añadimos al array de células vivas las correspondientes 
 		addCelulas(t);
 	}
 	if(!morir){
-		/* Eliminamos del array de células vivas las que mueren */	
+		/* Eliminamos del array de células vivas las que mueren 
 		//removeCelulas(t);
 	}
 	
@@ -101,5 +113,5 @@ void iterarTablero(struct tablero *t)
 		for(int j=0;j<TAM_ARRAY;j++){
 			t[i][j];
 		}
-	}*/
-}
+	}
+}*/
