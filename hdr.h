@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 /* Tamaño del array regular bidimensaional */
 #define TAM_ARRAY 50

@@ -7,4 +7,4 @@ principal.o : principal.c hdr.h
 	gcc -c principal.c -o principal.o
 
 funciones.o : hdr.h funciones.c
-	gcc -c funciones.c -o funciones.o
+	gcc -c funciones.c -o funciones.o -std=c99

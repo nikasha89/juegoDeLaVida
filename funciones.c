@@ -5,7 +5,7 @@ int menuInicio()
 {
 	int num = 0;
 	printf("Escoge un número entre 3 y 2400: \n");
-	scanf("%d",&num);
+	scanf("%4d",&num);
 	return num;
 }
 
