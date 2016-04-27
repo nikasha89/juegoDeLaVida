@@ -3,34 +3,28 @@
 int main(int argc, char **argv)
 {
 
-	/* Recogemos los parametros de ancho, alto y lugar opcion */
+	//Preguntamos al usuario para insertar el nº de células inicial
 
-	//Ancho y Alto del mundo:
-	int width, high, c;
-	/* Cadena de caracter que guarda el path del archivo que contiene
-	la sesion anteriormente jugada y guardada del mundo */
-	char *directorio;
+	int numeroCelulas = menuInicio();
+	
+	//Inicializamos el Tablero de Células:
+	bool array[TAM_ARRAY][TAM_ARRAY];
+	bool provisional[TAM_ARRAY][TAM_ARRAY];
 
-	while((c = getopt( argc, argv, "w:h:d::"))!=-1){
-		switch(c){
-			case 'w':
-				width = strtol(optarg, NULL, 0);
-				break;
-			case 'h':
-				high = strtol(optarg, NULL, 0);
-				break;
-			case 'd':
-				directorio = optarg;
-				break;
-			default:
-				return EXIT_FAILURE;
-		}
+	//Establecemos a 1 (Muertas) todas las células:
+	declararTablero(array);
+
+	inicializarTablero(array,numeroCelulas);
+	printf("\tEstado Inicial: \n\n");
+	imprimeTablero(array);
+
+	//Iteramos:
+	for(int iteracion = 0; iteracion < ITERACION; iteracion++){
+		analizarTablero(array, provisional);
+		copiaArray(array, provisional);
+		declararTablero(provisional);
+		printf("\tIteración %d: \n\n", iteracion+1);
+		imprimeTablero(array);
+		printf("\n");
 	}
-	printf("width = %d; high= %d; directorio:%s \n", width, high, directorio);
-
-	struct celula{
-		bool muerta;
-	} Tablero;
-		int numeroCelulas = menuInicio();
-		printf("%d\n",numeroCelulas);	
 }

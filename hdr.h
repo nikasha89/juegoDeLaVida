@@ -4,63 +4,47 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h> 
 
 /* Tamaño del array regular bidimensaional */
 #define TAM_ARRAY 50
 /* Número de iteraciones */
-#define ITERACION 60
+#define ITERACION 10
 /* Lindantes se refiere a las 8 células lindantes que tiene cada una como máximo. */
 #define LINDANTES 8
 
-
-/* Definición de Estructuras y Enumerados 
-enum estado_celula{
-		VIVA, 
-		MUERTA
-	} EstadoCelula;
-
- Inicializamos célula con el estado MUERTA por defecto 
-struct celula{
-		enum estado_celula estado;
-	} Celula;
-
-struct coordenadas{
-		Aunque sean de tipo int, lo declararemos como unsigned char
-		de esta forma ocupa menos espacio en memoria
-		
-		unsigned char x; 
-		unsigned char y;
-	} Coordenadas;
-
-struct tablero{
-		int iteracion;
-		struct coordenadas arrayCelulasVivas[TAM_ARRAY*TAM_ARRAY];
-		int indexVivas;
-		struct coordenadas arrayCelulasNacen[TAM_ARRAY*TAM_ARRAY];
-		int indexNacidas;
-		struct coordenadas arrayCelulasMueren[TAM_ARRAY*TAM_ARRAY];
-		int indexMuertas;
-	} Tablero;
-*/
-struct punteros {
-	struct celula *next;
-	struct celula *prev;
-};
-struct  celula{
-	unsigned char x;
-	unsigned char y;
-	struct punteros p;
-};
+//Definición Estructura:
 
 
 
 /* Definición de funciones */
 
+//Imprime menú inicio.
 int menuInicio();
+
+//Inicializa el tablero con el número de celulas dadas por user
+void inicializarTablero(bool array[][TAM_ARRAY], int numCelulas);
+
+//Inicializa el tablero a 1s (celulas muertas)
+void declararTablero(bool array[][TAM_ARRAY]);
+
+//Para imprimir el tablero;
+void imprimeTablero(bool array[][TAM_ARRAY]);
+
+//Para analizar el tablero en cada iteración:
+void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY]);
+
+//Realiza la comprobación de las vecionas de una célula:
+bool tiene3VecinasVivas(int x, int y, bool array[][TAM_ARRAY]);
+
+//Para copiar un array en otro:
+void copiaArray(bool array[][TAM_ARRAY],bool arrayAcopiar[][TAM_ARRAY]);
+
+//Comprobar si una célula está dentro de los límites:
+bool estaDentroLimites(int x, int y);
 
 /*void iterarTablero(struct tablero *t);
 void imprimeTablero(struct tablero *t);
-void inicializarTablero(struct tablero *t, int numCelulas);
 //void analizarTablero(struct tablero *t);
 //Comprueba si un array está vacío.
 int estaVacioArray(struct coordenadas array[TAM_ARRAY*TAM_ARRAY]);

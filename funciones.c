@@ -10,108 +10,150 @@ int menuInicio()
 }
 
 
-
-
-
-
-
-
-
-
-
-/* VERSION ANTERIOR
-
-//Inicializa el tablero con el número de células indicado por el usuario:
-void inicializarTablero(struct tablero *t, int numCelulas)
+void declararTablero(bool array[][TAM_ARRAY])
 {
+
+	//Establecemos a 1 (como muertas) todas las células:
+	for(int i=0;i<TAM_ARRAY;i++){
+		for(int j=0;j<TAM_ARRAY;j++){
+
+			array[i][j] = true;
+
+		}
+	}
+
+}
+//Inicializa el tablero con el número de células indicado por el usuario:
+void inicializarTablero(bool array[][TAM_ARRAY], int numCelulas)
+{	
+	//Añadimos la semilla:
+	srand (time(NULL));
+
 	//Bucle con valor de iteración igual al número de células: 
-	for(int i=0;i< numCelulas;i++)
-	{ 
-		 Para obtener un número aleatorio:
+	for(int i=0;i< numCelulas;i++){ 
+		/* Para obtener un número aleatorio:
 		numero = rand () % (N-M+1) + M;   // Este está entre M y N 
 		En nuestro caso: Entre 0 y 49 Para obtener dos coordenadas del tablero
 		donde introducir las células vivas: 
-		
+		*/
 		int x= rand() %  50;
 		int y= rand() %  50;
 		
-		t->arrayCelulasVivas[i];
-		//t->tablero[x][y]-> estado = VIVA;
+		//Establecemos muerta como falso
+		array[x][y] = false;
 	}
 }
 
- Comprueba si el array está vacío, devuelve 
-null si hubo algún problema y un index si está lleno 
-int estaVacioArray(struct coordenadas array[TAM_ARRAY*TAM_ARRAY])
-{	
-	/* Inicializamos vacio a true, y si encuentra un elemento
-	dentro del array nos devolverá -1 
-	int vacio = NULL;
-	for(int i=0; i<TAM_ARRAY*TAM_ARRAY && !vacio; i++){
-		if(array[i].x && array[i].y){
-			vacio = i;
-		}
-	}
-	return vacio;
-}
-
-Comprueba si el array está vacío, devolviendo bool  
-bool estaVacio(struct tablero *t, enum estado_celula opcion)
-{	
-	/* Inicializamos vacio a true, y si encuentra un elemento
-	dentro del array nos devolverá false 
-	bool vacio = true;
-	int res = NULL;
-	switch(opcion){
-		case VIVA:
-			res = estaVacioArray(t->arrayCelulasNacen);
-			if( res ){
-				vacio = false;
-			}
-			//t->index
-		break;
-
-	}
-	
-	return vacio;
-}
-
-void addCelulas(struct tablero *t)
+void imprimeTablero(bool array[][TAM_ARRAY])
 {
-	/* Añadimos las células nacidas 
-	a la última posición del array células vivas: 
-	for(int j=0;j<TAM_ARRAY*TAM_ARRAY;j++){
-		//t->arrayCelulasVivas[j]
+	for(int i=0; i<TAM_ARRAY; i++){
+		for(int j=0; j<TAM_ARRAY; j++){
+
+			if(array[i][j] == 0){
+				printf(" V ");
+			}else{
+				printf(" - ");
+
+			}
+
+			//Si llegamos a la última columna nos vamos a la siguiente línea:
+			if(j == TAM_ARRAY-1){
+
+				printf(" \n");
+			}
+		}
+	}
+	printf("\tLeyenda:\n\t V: Célula Viva \n\t - : Célula Muerta \n");
+}
+
+//Para copiar un array en otro:
+void copiaArray(bool array[][TAM_ARRAY],bool arrayAcopiar[][TAM_ARRAY])
+{
+
+	//Copiamos el tablero en provisional:
+	for (int i = 0; i < TAM_ARRAY; ++i){
+		for(int j=0;j<TAM_ARRAY; j++){
+
+			array[i][j] =  arrayAcopiar[i][j];
+
+		}
+	}
+
+}
+
+//Realiza la iteración:
+void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY])
+{
+	//Copiamos el tablero en provisional:
+	copiaArray(provisional, array);
+	//Recorremos el array analizando cada célula y sus vecinas:
+	for (int i = 0; i < TAM_ARRAY; ++i){
+		for(int j=0;j<TAM_ARRAY; j++){
+			bool celula = array[i][j];
+			//Si está muerta y tiene 3 vecinas:
+			switch(celula){
+				case true:
+					if(tiene3VecinasVivas(i,j,array) == true){
+						//Nace:
+						provisional[i][j] = false;
+					}
+					break;
+				case false:
+					//Si está viva y no tiene 3 vecinas::
+					if(tiene3VecinasVivas(i,j,array) == false){
+						//Muere:
+						provisional[i][j] = true;
+					}
+					break;
+			}
+		}
 	}
 }
 
-/* Realiza la comprobación de las células vivas/muertas para la siguiente iteración
-y elimina/añade las células nacidas de la anterior iteración 
-void iterarTablero(struct tablero *t)
-{	
-	/* Comprobamos que no tenemos Células que 
-	tengan que nacer o revivir de la anterior iteración: 
-	bool nacer = estaVacio(t, VIVA);
-	bool morir = estaVacio(t, MUERTA);
-	if(!nacer){
-		/* Añadimos al array de células vivas las correspondientes 
-		addCelulas(t);
+//Realiza la comprobación de las vecionas de una célula:
+bool tiene3VecinasVivas(int x, int j, bool array[][TAM_ARRAY])
+{
+	int contador = 0;
+
+	/* Sabiendo que cada célula (i,j) tiene máximo 8 lindantes,
+	comprobando (i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1); y
+	(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1); */
+
+	if(estaDentroLimites(x-1,j-1) && array[x-1][j-1] == false){
+		contador++;
 	}
-	if(!morir){
-		/* Eliminamos del array de células vivas las que mueren 
-		//removeCelulas(t);
+	if(estaDentroLimites(x-1,j) && array[x-1][j] == false){
+		contador++;
 	}
+	if(estaDentroLimites(x-1,j+1) && array[x-1][j+1] == false){
+		contador++;
+	}
+	if(estaDentroLimites(x,j-1) && contador<3 && array[x][j-1] == false){
+		contador++;
+	}
+	if(estaDentroLimites(x,j+1) && contador<3 && array[x][j+1] == false){
+		contador++;
+	}
+	if(estaDentroLimites(x+1,j-1) && contador<3 && array[x+1][j-1] == false){
+		contador++;
+	}
+	if(estaDentroLimites(x+1,j) && contador<3 && array[x+1][j] == false){
+		contador++;
+	}
+	if(estaDentroLimites(x+1,j+1) && contador<3 && array[x+1][j+1] == false){
+		contador++;
+	}
+
+	return (contador>=3);
+}
+
+bool estaDentroLimites(int x, int y)
+{
+	bool res = true;
 	
-	/* Analizamos el nº de Células que deben nacer, 
-	permanecer igual o morir en la siguiente iteración: */
-	//analizarTablero(t);
-	/* Tras analizarTablero, tendremos en *t 2 arrays
-	con las coordenadas de las células que deben nacer
-	y morir en la siguiente iteración:
-	*/
-	/*for(int i=0;i<TAM_ARRAY;i++){
-		for(int j=0;j<TAM_ARRAY;j++){
-			t[i][j];
-		}
+	if( x>=TAM_ARRAY || x<0 || y>TAM_ARRAY || y<0){
+		res = false;
 	}
-}*/
+	return res;
+}
+
