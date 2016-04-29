@@ -1,5 +1,5 @@
-#ifndef HDR_H
-#define HDR_H
+#ifndef MUNDO_H
+#define MUNDO_H
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
