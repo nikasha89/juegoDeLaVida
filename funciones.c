@@ -72,8 +72,6 @@ void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY])
 		for(int j=0;j<TAM_ARRAY; j++)
 			//Comprobamos las condiciones en cada caso:
 			comprobarCondiciones(i,j,array, provisional);
-		
-	
 	//Copiamos provisional en array:
 	copiaArray(array, provisional);
 }
