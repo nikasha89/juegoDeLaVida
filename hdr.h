@@ -28,7 +28,7 @@ void imprimeTablero(bool array[][TAM_ARRAY]);
 void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY]);
 
 //Realiza la comprobación de las condiciones para vivir o morir de una célula:
-bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool caso);
+bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisional[][TAM_ARRAY]);
 
 //Cuenta las células vecinas vivas de otra dada:
 int cuentaVecinasVivas(int x, int j, bool array[][TAM_ARRAY]);

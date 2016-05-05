@@ -48,11 +48,9 @@ void imprimeTablero(bool array[][TAM_ARRAY])
 			//Si está muerta escribimos - :
 			else
 				printf(" - ");
-			
-			//Si llegamos a la última columna nos vamos a la siguiente línea:
-			if(j == TAM_ARRAY-1)
-				printf(" \n");
 		}
+		//Si llegamos a la última columna nos vamos a la siguiente línea:
+		printf(" \n");
 	}
 	printf("\tLeyenda:\n\t V: Célula Viva \n\t - : Célula Muerta \n");
 }
@@ -72,25 +70,8 @@ void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY])
 	//Recorremos el array analizando cada célula y sus vecinas:
 	for (int i = 0; i < TAM_ARRAY; ++i){
 		for(int j=0;j<TAM_ARRAY; j++){
-			bool celula = array[i][j];
-			switch(celula){
-				case false:
-					//Si está muerta y tiene 3 vecinas vivas, nace:
-					if(comprobarCondiciones(i,j,array,celula) == true)
-						//Nace:
-						provisional[i][j] = true;
-					else
-						provisional[i][j] = array[i][j];
-					break;
-				case true:
-					//Si está viva y no tiene 2 o 3 vecinas vivas muere:
-					if(comprobarCondiciones(i,j,array,celula) == false)
-						//Muere:
-						provisional[i][j] = false;
-					else
-						provisional[i][j] = array[i][j];
-					break;
-			}
+			//Comprobamos las condiciones en cada caso:
+			comprobarCondiciones(i,j,array, provisional);
 		}
 	}
 	//Copiamos provisional en array:
@@ -98,24 +79,33 @@ void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY])
 }
 
 //Realiza la comprobación de las vecionas de una célula:
-bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool caso)
+bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisional[][TAM_ARRAY])
 {
 	int vecinas = 0;
 	bool res = false;
 	/* Sabiendo que cada célula (i,j) tiene máximo 8 lindantes,
 	comprobando (i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1); y
 	(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1); */
+	bool caso = array[x][j];
 	vecinas = cuentaVecinasVivas(x,j,array);
 	switch(caso){
 		//Si está muerta:
 		case false:
 			//Si tiene 3 vecinas vivas nace:
-			res = (vecinas == 3);
+			if(vecinas == 3)
+				provisional[x][j] = true;
+			else
+				//Si no tiene 3 vecinas vivas sigue muerta:
+				provisional[x][j] = array[x][j];
 			break;
 		//Si está viva:
 		case true:
-			//Si tiene 2 o 3 vecinas vivas cumple las condiciones para seguir viva:
-			res = (vecinas >= 2 && vecinas <= 3);
+			//Si no tiene 2 o 3 vecinas vivas muere:
+			if(!(vecinas >=2 && vecinas <= 3))
+				provisional[x][j] = false;
+			else
+				//Si tiene 2 o 3 vecinas vivas sigue viva:
+				provisional[x][j] = array[x][j];
 			break;
 	}
 	return res;
