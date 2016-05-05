@@ -3,7 +3,7 @@
 int main(int argc, char **argv)
 {
 	//Preguntamos al usuario para insertar el nº de células inicial
-	int numeroCelulas = menuInicio();
+	int numeroCelulasVivas = menuInicio();
 	
 	//Declaramos el Tablero de Células:
 	bool array[TAM_ARRAY][TAM_ARRAY];
@@ -13,9 +13,10 @@ int main(int argc, char **argv)
 	establecerA0Tablero(array);
 
 	//Inicializamos tablero a 0s:
-	inicializarTablero(array,numeroCelulas);
+	inicializarTablero(array,numeroCelulasVivas);
 	printf("\tEstado Inicial: \n\n");
-	imprimeTablero(array);
+	int cont2 = contadorCelulasVivas(array);
+	imprimeTablero(array, numeroCelulasVivas);
 
 	//Iteramos:
 	for(int iteracion = 0; iteracion < ITERACION; iteracion++){
@@ -23,7 +24,8 @@ int main(int argc, char **argv)
 		analizarTablero(array, provisional);
 		//Imprimimos iteración con su leyenda:
 		printf("\tIteración %d: \n\n", iteracion+1);
-		imprimeTablero(array);
+		numeroCelulasVivas = contadorCelulasVivas(array);
+		imprimeTablero(array, numeroCelulasVivas);
 		printf("\n");
 	}
 }

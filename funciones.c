@@ -38,21 +38,23 @@ void inicializarTablero(bool array[][TAM_ARRAY], int numCelulas)
 }
 
 //Imprime tablero por consola:
-void imprimeTablero(bool array[][TAM_ARRAY])
+void imprimeTablero(bool array[][TAM_ARRAY], int numCelulas)
 {
 	for(int i=0; i<TAM_ARRAY; i++){
 		for(int j=0; j<TAM_ARRAY; j++){
 			//Si célula está viva escribimos V:
 			if(array[i][j] == true)
-				printf(" V ");
+				printf(ANSI_COLOR_YELLOW " V " ANSI_COLOR_RESET);
 			//Si está muerta escribimos - :
 			else
-				printf(" - ");
+				printf(ANSI_COLOR_CYAN " - " ANSI_COLOR_RESET);
 		}
 		//Si llegamos a la última columna nos vamos a la siguiente línea:
 		printf(" \n");
 	}
-	printf("\tLeyenda:\n\t V: Célula Viva \n\t - : Célula Muerta \n");
+	printf("\tLeyenda:\n\t");
+	printf(ANSI_COLOR_YELLOW "V: Célula Viva -> Vivas: %d\n" ANSI_COLOR_RESET, numCelulas);
+	printf(ANSI_COLOR_CYAN "\t- : Célula Muerta -> Muertas %d\n" ANSI_COLOR_RESET, TAM_ARRAY*TAM_ARRAY - numCelulas);
 }
 
 //Para copiar un array en otro:
@@ -77,10 +79,9 @@ void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY])
 }
 
 //Realiza la comprobación de las vecionas de una célula:
-bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisional[][TAM_ARRAY])
+void comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisional[][TAM_ARRAY])
 {
 	int vecinas = 0;
-	bool res = false;
 	/* Sabiendo que cada célula (i,j) tiene máximo 8 lindantes,
 	comprobando (i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1); y
 	(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1); */
@@ -90,8 +91,9 @@ bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisiona
 		//Si está muerta:
 		case false:
 			//Si tiene 3 vecinas vivas nace:
-			if(vecinas == 3)
+			if(vecinas == 3){
 				provisional[x][j] = true;
+			}
 			else
 				//Si no tiene 3 vecinas vivas sigue muerta:
 				provisional[x][j] = array[x][j];
@@ -99,14 +101,14 @@ bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisiona
 		//Si está viva:
 		case true:
 			//Si no tiene 2 o 3 vecinas vivas muere:
-			if(!(vecinas >=2 && vecinas <= 3))
+			if(!(vecinas >=2 && vecinas <= 3)){
 				provisional[x][j] = false;
+			}
 			else
 				//Si tiene 2 o 3 vecinas vivas sigue viva:
 				provisional[x][j] = array[x][j];
 			break;
 	}
-	return res;
 }
 
 //Contador de células Vecinas Vivas:
@@ -138,3 +140,15 @@ bool estaDentroLimites(int x, int y)
 	return  !(x>=TAM_ARRAY || x<0 || y>TAM_ARRAY || y<0);
 }
 
+//Contador de celulas vivas:
+int contadorCelulasVivas(bool array[][TAM_ARRAY])
+{
+	int contador = 0;
+	for(int i = 0; i < TAM_ARRAY; i++){
+		for(int j = 0; j < TAM_ARRAY; j++){
+			if(array[i][j])
+				contador++;
+		}
+	}
+	return contador;
+}

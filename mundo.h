@@ -10,6 +10,11 @@
 #define TAM_ARRAY 50
 /* Número de iteraciones */
 #define ITERACION 9
+//Definición de colores:
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
 /* Definición de funciones */
 //Imprime menú inicio.
@@ -22,13 +27,13 @@ void inicializarTablero(bool array[][TAM_ARRAY], int numCelulas);
 void establecerA0Tablero(bool array[][TAM_ARRAY]);
 
 //Para imprimir el tablero;
-void imprimeTablero(bool array[][TAM_ARRAY]);
+void imprimeTablero(bool array[][TAM_ARRAY], int numCelulas);
 
 //Para analizar el tablero en cada iteración:
 void analizarTablero(bool array[][TAM_ARRAY],bool provisional[][TAM_ARRAY]);
 
 //Realiza la comprobación de las condiciones para vivir o morir de una célula:
-bool comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisional[][TAM_ARRAY]);
+void comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisional[][TAM_ARRAY]);
 
 //Cuenta las células vecinas vivas de otra dada:
 int cuentaVecinasVivas(int x, int j, bool array[][TAM_ARRAY]);
@@ -38,4 +43,7 @@ void copiaArray(bool array[][TAM_ARRAY],bool arrayAcopiar[][TAM_ARRAY]);
 
 //Comprobar si una célula está dentro de los límites:
 bool estaDentroLimites(int x, int y);
+
+//Para contar las celulas vivas del mundo:
+int contadorCelulasVivas(bool array[][TAM_ARRAY]);
 #endif
