@@ -1,4 +1,4 @@
-#include "hdr.h"
+#include "mundo.h"
 
 //Comienza el juego preguntando el número de células de las que partir:
 int menuInicio()
