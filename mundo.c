@@ -91,9 +91,8 @@ void comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisiona
 		//Si está muerta:
 		case false:
 			//Si tiene 3 vecinas vivas nace:
-			if(vecinas == 3){
+			if(vecinas == 3)
 				provisional[x][j] = true;
-			}
 			else
 				//Si no tiene 3 vecinas vivas sigue muerta:
 				provisional[x][j] = array[x][j];
@@ -101,9 +100,8 @@ void comprobarCondiciones(int x, int j, bool array[][TAM_ARRAY], bool provisiona
 		//Si está viva:
 		case true:
 			//Si no tiene 2 o 3 vecinas vivas muere:
-			if(!(vecinas >=2 && vecinas <= 3)){
+			if(!(vecinas >=2 && vecinas <= 3))
 				provisional[x][j] = false;
-			}
 			else
 				//Si tiene 2 o 3 vecinas vivas sigue viva:
 				provisional[x][j] = array[x][j];
