@@ -30,8 +30,8 @@ void inicializarTablero(bool array[][TAM_ARRAY], int numCelulas)
 		En nuestro caso: Entre 0 y 49 Para obtener dos coordenadas del tablero
 		donde introducir las células vivas: 
 		*/
-		int x= rand() %  50;
-		int y= rand() %  50;
+		int x= rand() %  TAM_ARRAY;
+		int y= rand() %  TAM_ARRAY;
 		//Establecemos celula como viva (true)
 		array[x][y] = true;
 	}
