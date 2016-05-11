@@ -1,34 +1,31 @@
-#include "hdr.h"
+#include "mundo.h"
 
-int main(){
-	enum estado_celula{
-		VIVA, 
-		MUERTA
-	} EstadoCelula;
+int main(int argc, char **argv)
+{
+	//Preguntamos al usuario para insertar el nº de células inicial
+	int numeroCelulasVivas = menuInicio();
+	
+	//Declaramos el Tablero de Células:
+	bool array[TAM_ARRAY][TAM_ARRAY];
+	bool provisional[TAM_ARRAY][TAM_ARRAY];
 
-	/* Inicializamos célula con el estado MUERTA por defecto */
-	struct celula{
-		enum estado_celula estado = MUERTA;
-	} Celula;
+	//Establecemos a 0 (Muertas) todas las células:
+	establecerA0Tablero(array);
 
-	struct coordenadas{
-		/* Aunque sean de tipo int, lo declararemos como unsigned char
-		de esta forma ocupa menos espacio en memoria
-		*/
-		unsigned char x; 
-		unsigned char y;
-	} Coordenadas;
+	//Inicializamos tablero a 0s:
+	inicializarTablero(array,numeroCelulasVivas);
+	printf("\tEstado Inicial: \n\n");
+	int cont2 = contadorCelulasVivas(array);
+	imprimeTablero(array, numeroCelulasVivas);
 
-	struct tablero{
-		int iteracion;
-		struct coordenadas arrayCelulasVivas[TAM_ARRAY*TAM_ARRAY];
-		int indexVivas;
-		struct coordenadas arrayCelulasNacen[TAM_ARRAY*TAM_ARRAY];
-		int indexNacidas;
-		struct coordenadas arrayCelulasMueren[TAM_ARRAY*TAM_ARRAY];
-		int indexMuertas;
-	} Tablero;
-		int numeroCelulas = menuInicio();
-		printf("%d\n",numeroCelulas);	
+	//Iteramos:
+	for(int iteracion = 0; iteracion < ITERACION; iteracion++){
+		//Analizamos el tablero y en provisional guardamos los cambios.
+		analizarTablero(array, provisional);
+		//Imprimimos iteración con su leyenda:
+		printf("\tIteración %d: \n\n", iteracion+1);
+		numeroCelulasVivas = contadorCelulasVivas(array);
+		imprimeTablero(array, numeroCelulasVivas);
+		printf("\n");
+	}
 }
-#endif
