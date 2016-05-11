@@ -33,8 +33,6 @@ void inicializarTablero(bool *array, int numCelulas, int width, int high)
 		int i= rand() %  high;
 		int j= rand() %  width;
 		//Establecemos celula como viva (true)
-		//*(array+i*j)  = true;
-		//*(array) = true;
 		*(array+j+i*width) = true;
 	}
 }
@@ -113,7 +111,6 @@ void comprobarCondiciones(int i, int j, bool *array, bool *provisional, int widt
 				*(provisional+i*width+j) = *(array+i*width+j);
 			break;
 	}
-	//printf("%p->(%d,%d)->%d Vecinas; ", array+i*width+j, j, i, vecinas);
 }
 
 //Contador de células Vecinas Vivas:
