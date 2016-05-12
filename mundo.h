@@ -23,11 +23,23 @@ struct Mundo {
 		int high;
 		bool *array;
 		bool *provisional;
+		/* Si array_objetivo=true, cogemos array como mundo,
+		si array_objetivo=false cogemos provisional */
+		bool array_objetivo;
 	};
 
 /* Definición de funciones */
 //Imprime menú inicio.
 int menuInicio(int width, int high);
+
+//Constructor Mundo:
+struct Mundo * mundo_constructor(int width, int high);
+
+//Constructor de Array de Células:
+bool * array_contructor();
+
+//Destruye Mundo:
+void mundo_free(struct Mundo * mundo);
 
 //Inicializa el tablero con el número de celulas dadas por user
 void inicializarTablero(struct Mundo *mundo, int numCelulas);
@@ -47,9 +59,6 @@ void comprobarCondiciones(int i, int j, struct Mundo *mundo);
 //Cuenta las células vecinas vivas de otra dada:
 int cuentaVecinasVivas(int i, int j, struct Mundo *mundo);
 
-//Para copiar un array en otro:
-void copiaArray(struct Mundo *mundo);
-
 //Comprobar si una célula está dentro de los límites:
 bool estaDentroLimites(int i, int j, int width, int high);
 
@@ -60,6 +69,7 @@ int contadorCelulasVivas(struct Mundo *mundo);
 y le devolvemos un puntero a bool*/
 bool * transformaApuntero(bool *array,int i,int j, int width);
 
-//Para comprobar errores de reserva de memoria:
+/* Para comprobar errores de reserva de memoria:
+devuelve 1 en caso de error, 0 e.o.c */
 int compruebaError(void *p);
 #endif

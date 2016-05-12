@@ -1,4 +1,44 @@
 #include "mundo.h"
+//Constructor Mundo:
+struct Mundo * mundo_constructor(int width, int high)
+{
+	struct Mundo *tablero = (struct Mundo *) malloc( sizeof(struct Mundo) );
+	if(compruebaError(tablero))
+		exit(EXIT_FAILURE);
+	//Añadimos las dimensiones del tablero:
+	tablero->width = width;
+	tablero->high = high;
+	/* Si array_objetivo=true, cogemos array,
+	si array_objetivo=false cogemos provisional */
+	tablero->array_objetivo = true;
+	//Declaramos el array de tablero:
+	tablero->array = array_contructor(width, high);
+	if(compruebaError(tablero->array)){
+		free(tablero);
+		exit(EXIT_FAILURE);
+	}
+	//Declaramos el array provisional:
+	tablero->provisional = array_contructor(width, high);
+	if(compruebaError(tablero->provisional)){
+		free(tablero->array);
+		free(tablero);
+		exit(EXIT_FAILURE);
+	}
+	return tablero;
+}
+//Constructor de Array de Células:
+bool * array_contructor(int width, int high)
+{
+	bool *mundo = (bool *) malloc(width * high * sizeof(bool));
+}
+
+//Destruye Mundo:
+void mundo_free(struct Mundo * mundo)
+{
+	free(mundo->array);
+	free(mundo->provisional);
+	free(mundo);
+}
 
 //Comienza el juego preguntando el número de células de las que partir:
 int menuInicio(int width, int high)
@@ -40,11 +80,15 @@ void inicializarTablero(struct Mundo *mundo, int numCelulas)
 //Imprime tablero por consola:
 void imprimeTablero(struct Mundo *mundo)
 {
+	bool *array_objetivo = mundo->array;
+	if(!mundo->array_objetivo){
+		array_objetivo = mundo->provisional;		
+	}
 	int numCelulas = contadorCelulasVivas(mundo);
 	for(int i=0; i<mundo->high; i++){
 		for(int j=0; j<mundo->width; j++){
 			//Si célula está viva escribimos V:
-			if(*(transformaApuntero(mundo->array,i,j,mundo->width)) == true)
+			if(*(transformaApuntero(array_objetivo,i,j,mundo->width)) == true)
 				printf(ANSI_COLOR_YELLOW " V " ANSI_COLOR_RESET);
 			//Si está muerta escribimos - :
 			else
@@ -58,14 +102,6 @@ void imprimeTablero(struct Mundo *mundo)
 	printf(ANSI_COLOR_CYAN "\t- : Célula Muerta -> Muertas %d\n" ANSI_COLOR_RESET,mundo->width*mundo->high - numCelulas);
 }
 
-//Copiamos provisional en array:
-void copiaArray(struct Mundo *mundo)
-{
-	for (int i = 0; i < mundo->high; ++i)
-		for(int j = 0; j < mundo->width ; j++)
-			*(transformaApuntero(mundo->array,i,j,mundo->width)) =  *(transformaApuntero(mundo->provisional,i,j,mundo->width));
-}
-
 //Realiza la iteración:
 void analizarTablero(struct Mundo *mundo)
 {
@@ -74,8 +110,11 @@ void analizarTablero(struct Mundo *mundo)
 		for(int j = 0; j < mundo->width ; j++)
 			//Comprobamos las condiciones en cada caso:
 			comprobarCondiciones(i,j,mundo);
-	//Copiamos provisional en array:
-	copiaArray(mundo);
+	//Ahora array_objetivo será el que anteriormente era provisional:
+	mundo->array_objetivo = !mundo->array_objetivo;
+	bool *array_objetivo = mundo->array;
+	if(!mundo->array_objetivo)
+		array_objetivo = mundo->provisional;
 }
 
 //Realiza la comprobación de las vecionas de una célula:
@@ -85,28 +124,32 @@ void comprobarCondiciones(int i, int j, struct Mundo *mundo)
 	/* Sabiendo que cada célula (i,j) tiene máximo 8 lindantes,
 	comprobando (i-1,j-1);(i-1,j);(i-1,j+1);(i,j-1); y
 	(i,j+1);(i+1,j-1);(i+1,j);(i+1,j+1); */
-	bool caso =*(transformaApuntero(mundo->array,i,j,mundo->width));
+	bool *array_objetivo = mundo->array;
+	bool *array_provisional = mundo->provisional;
+	if(!mundo->array_objetivo){
+		array_provisional = mundo->array;
+		array_objetivo = mundo->provisional;		
+	}
+	bool caso =*(transformaApuntero(array_objetivo,i,j,mundo->width));
 	vecinas = cuentaVecinasVivas(i,j,mundo);
 	switch(caso){
 		//Si está muerta:
 		case false:
 			//Si tiene 3 vecinas vivas nace:
-			if(vecinas == 3){
-				*(transformaApuntero(mundo->provisional,i,j,mundo->width)) = true;
-			}
+			if(vecinas == 3)
+				*(transformaApuntero(array_provisional,i,j,mundo->width)) = true;
 			else
 				//Si no tiene 3 vecinas vivas sigue muerta:
-				*(transformaApuntero(mundo->provisional,i,j,mundo->width)) = *(transformaApuntero(mundo->array,i,j,mundo->width));
+				*(transformaApuntero(array_provisional,i,j,mundo->width)) = *(transformaApuntero(array_objetivo,i,j,mundo->width));
 			break;
 		//Si está viva:
 		case true:
 			//Si no tiene 2 o 3 vecinas vivas muere:
-			if(!(vecinas >=2 && vecinas <= 3)){
-				*(transformaApuntero(mundo->provisional,i,j,mundo->width)) = false;
-			}
+			if(!(vecinas >=2 && vecinas <= 3))
+				*(transformaApuntero(array_provisional,i,j,mundo->width)) = false;
 			else
 				//Si tiene 2 o 3 vecinas vivas sigue viva:
-				*(transformaApuntero(mundo->provisional,i,j,mundo->width)) = *(transformaApuntero(mundo->array,i,j,mundo->width));
+				*(transformaApuntero(array_provisional,i,j,mundo->width)) = *(transformaApuntero(array_objetivo,i,j,mundo->width));
 			break;
 	}
 }
@@ -114,22 +157,25 @@ void comprobarCondiciones(int i, int j, struct Mundo *mundo)
 //Contador de células Vecinas Vivas de Array:
 int cuentaVecinasVivas(int i, int j,  struct Mundo *mundo)
 {
+	bool *array_objetivo = mundo->array;
+	if(!mundo->array_objetivo)
+		array_objetivo = mundo->provisional;		
 	int contador = 0;
-	if(estaDentroLimites(i-1, j-1, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i-1,j-1,mundo->width)))
+	if(estaDentroLimites(i-1, j-1, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i-1,j-1,mundo->width)))
 		contador++;
-	if(estaDentroLimites(i-1,j, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i-1,j,mundo->width)))
+	if(estaDentroLimites(i-1,j, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i-1,j,mundo->width)))
 		contador++;
-	if(estaDentroLimites(i-1,j+1, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i-1,j+1,mundo->width)))
+	if(estaDentroLimites(i-1,j+1, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i-1,j+1,mundo->width)))
 		contador++;
-	if(estaDentroLimites(i,j-1, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i,j-1,mundo->width)))
+	if(estaDentroLimites(i,j-1, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i,j-1,mundo->width)))
 		contador++;
-	if(estaDentroLimites(i,j+1, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i,j+1,mundo->width)))
+	if(estaDentroLimites(i,j+1, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i,j+1,mundo->width)))
 		contador++;
-	if(estaDentroLimites(i+1,j-1, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i+1,j-1,mundo->width)))
+	if(estaDentroLimites(i+1,j-1, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i+1,j-1,mundo->width)))
 		contador++;
-	if(estaDentroLimites(i+1,j, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i+1,j,mundo->width)))
+	if(estaDentroLimites(i+1,j, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i+1,j,mundo->width)))
 		contador++;
-	if(estaDentroLimites(i+1,j+1, mundo->width, mundo->high) && *(transformaApuntero(mundo->array,i+1,j+1,mundo->width)))
+	if(estaDentroLimites(i+1,j+1, mundo->width, mundo->high) && *(transformaApuntero(array_objetivo,i+1,j+1,mundo->width)))
 		contador++;
 	return contador;
 }
@@ -144,9 +190,12 @@ bool estaDentroLimites(int i, int j, int width, int high)
 int contadorCelulasVivas(struct Mundo *mundo)
 {
 	int contador = 0;
+	bool *array_objetivo = mundo->array;
+	if(!mundo->array_objetivo)
+		array_objetivo = mundo->provisional;		
 	for(int i = 0; i < mundo->high; i++)
 		for(int j = 0; j < mundo->width; j++)
-			if(*(transformaApuntero(mundo->array,i,j,mundo->width))) 
+			if(*(transformaApuntero(array_objetivo,i,j,mundo->width))) 
 				contador++;	
 	return contador;
 }
@@ -164,6 +213,6 @@ int compruebaError(void *p)
 {
 	if(!p)
 		perror("Error al reservar memoria!");
-	return p == NULL;
+	return !p;
 
 }
