@@ -26,6 +26,7 @@ struct Mundo * mundo_constructor(int width, int high)
 	}
 	return tablero;
 }
+
 //Constructor de Array de Células:
 bool * array_contructor(int width, int high)
 {
@@ -61,6 +62,8 @@ void establecerA0Tablero(struct Mundo *mundo)
 //Inicializa el tablero con el número de células indicado por el usuario:
 void inicializarTablero(struct Mundo *mundo, int numCelulas)
 {	
+	//Establecemos a 0 (Muertas) todas las células:
+	establecerA0Tablero(mundo);
 	//Añadimos la semilla:
 	srand (time(NULL));
 	//Bucle con valor de iteración igual al número de células: 
